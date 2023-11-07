@@ -1,0 +1,143 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #ffffff;
+}
+.header {
+    display: flex;
+    flex-direction: column; /* Stack the logo and heading vertically */
+    align-items: center; /* Center-align the logo and heading */
+    margin-bottom: 20px;
+    text-align: center;
+    color: #0056b3;
+}
+
+.logo {
+    margin-bottom: 15px; /* Space between the logo and the heading */
+    width: 100px; /* Adjust the width as needed */
+    height: auto; /* Maintain the aspect ratio */
+    border-radius: 4px;
+}
+
+
+.container {
+    width: 400px;
+    height: auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.tab {
+    display: flex;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.tablinks {
+    flex: 1;
+    padding: 10px;
+    cursor: pointer;
+    background-color: #93c4ec;
+    border: none;
+    outline: none;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+
+.tablinks:last-child {
+    margin-right: 0; /* Remove margin for the last tab link */
+}
+.tablinks.active {
+    background-color: #007BFF;
+    color: #fff;
+    font-weight: bold;
+}
+
+.tabIndicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    height: 2px;
+    background-color: #007BFF;
+    transition: transform 0.3s;
+}
+
+.tabcontent {
+    display: none;
+    color: #0056b3;
+    text-align: center;
+    opacity: 0; /* Start with content hidden */
+    transition: opacity 0.3s; /* Smooth transition for opacity */
+}
+.tabcontent.show {
+    opacity: 1; /* Fully visible when the class 'show' is added */
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 50%;
+    padding: 10px;
+    background-color: #1477e1;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+
+button:hover {
+    background-color: #0056b3;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Horizontally center the button */
+    justify-content: center; /* Vertically center the button */
+    height: 100%; /* Take full height of the container */
+}
+
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+.typing-effect {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid #ffffff;
+    animation: blink 0.5s infinite;
+    margin: 10px 0; /* Adjust the top and bottom margin to 5px */
+}
+
+.header h2 {
+    animation: typing 1s steps(40, end);
+    font-size: 2rem;
+}
+
+
+
+
+

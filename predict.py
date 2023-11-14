@@ -1,11 +1,16 @@
-# Hello da fix
-
 import os
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import matplotlib as plt
 from flask import Flask, render_template, redirect, url_for, request, flash
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
+scopes = ['https://www.googleapis.com/auth/spreadsheets',
+          'https://www.googleapis.com/auth/drive']
+
+creds = ServiceAccountCredentials.from_json_keyfile_name(
+    "E:\Webapp\mywebapp\data\excel-database-404404-57bd0373f71a.json", scopes=scopes)
 
 
 @app.route('/')

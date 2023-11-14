@@ -68,6 +68,16 @@
     <div id="News" class="tabcontent">
       <h3>News</h3>
       <p>Some news this fine day!</p>
+      <h1>Google Sheets Data</h1>
+      <table border="1">
+        {% for row in values %}
+        <tr>
+          {% for cell in row %}
+          <td>{{ cell }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
     </div>
 
     <div id="Contact" class="tabcontent">

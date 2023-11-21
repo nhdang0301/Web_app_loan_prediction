@@ -6,13 +6,15 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import matplotlib as plt
 from flask import Flask, render_template, redirect, url_for, request, flash
+
+# hello my friend
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
 scopes = ['https://www.googleapis.com/auth/spreadsheets',
           'https://www.googleapis.com/auth/drive']
 
 creds = ServiceAccountCredentials.from_json_keyfile_name(
-    "E:\Webapp\mywebapp\data\excel-database-404404-57bd0373f71a.json", scopes=scopes)
+    "E:\Web_app_loan_prediction\data\excel-database-404404-57bd0373f71a.json", scopes=scopes)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
@@ -60,7 +62,7 @@ def login():
 @app.route('/dashboard')
 def dashboard():
     # Reading the Excel file
-    filepath = 'E:\Webapp\mywebapp\data\Raw_data.csv'
+    filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
     df = pd.read_csv(filepath, nrows=50)
 
     # Converting the dataframe to a dictionary for easier processing in the template

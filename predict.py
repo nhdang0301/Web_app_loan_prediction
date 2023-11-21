@@ -8,6 +8,7 @@ import matplotlib as plt
 from flask import Flask, render_template, redirect, url_for, request, flash
 
 # hello my friend
+# lau ngay qua roi nhen
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
 scopes = ['https://www.googleapis.com/auth/spreadsheets',

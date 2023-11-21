@@ -6,7 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import matplotlib as plt
 from flask import Flask, render_template, redirect, url_for, request, flash
-
+# chao ngay moi cac bro
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
 scopes = ['https://www.googleapis.com/auth/spreadsheets',

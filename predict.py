@@ -1,19 +1,12 @@
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import matplotlib as plt
 from flask import Flask, render_template, redirect, url_for, request, flash
 # chao ngay moi cac bro
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
-scopes = ['https://www.googleapis.com/auth/spreadsheets',
-          'https://www.googleapis.com/auth/drive']
-
-creds = ServiceAccountCredentials.from_json_keyfile_name(
-    "E:\Web_app_loan_prediction\data\excel-database-404404-57bd0373f71a.json", scopes=scopes)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
@@ -55,7 +48,7 @@ def login():
             return redirect(url_for('dashboard'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('home')
+    return redirect(url_for('home'))
 
 
 @app.route('/dashboard')

@@ -39,6 +39,10 @@ def register():
         return redirect(url_for('home'))
 
 
+admin_username = 'admin@gmail.com'
+admin_pwd = generate_password_hash('12345')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':

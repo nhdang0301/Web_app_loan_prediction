@@ -1,3 +1,4 @@
+import psycopg2
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -8,7 +9,7 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zbhyszrxtobmsu:2c02c1585c00f8bcbd33c90797f0234643ce135688a1b296372c0087badcf788@ec2-52-6-117-96.compute-1.amazonaws.com:5432/deohkrnac3mloe'
 db = SQLAlchemy(app)
 
 
@@ -37,10 +38,6 @@ def register():
         db.session.commit()
         flash('Your account has been created!', 'success')
         return redirect(url_for('home'))
-
-
-admin_username = 'admin@gmail.com'
-admin_pwd = generate_password_hash('12345')
 
 
 @app.route('/login', methods=['GET', 'POST'])

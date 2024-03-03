@@ -55,15 +55,16 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
-    # Reading the Excel file
-    filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
-    df = pd.read_csv(filepath, nrows=50)
+    # # Reading the Excel file
+    # filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
+    # df = pd.read_csv(filepath, nrows=50)
 
-    # Converting the dataframe to a dictionary for easier processing in the template
-    data = df.to_dict(orient='records')
+    # # Converting the dataframe to a dictionary for easier processing in the template
+    # data = df.to_dict(orient='records')
 
-    # Rendering the HTML template
-    return render_template('dashboard.html', data=data)
+    # # Rendering the HTML template
+    return render_template('dashboard.html')
+    # return render_template('dashboard.html', data=data)
 
 
 @app.route('/users')

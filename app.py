@@ -13,8 +13,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zbhyszrxtobmsu:2c02c1585c0
 db = SQLAlchemy(app)
 
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class all_users(db.Model):
+    __tablename__ = 'all_users'
+    user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
@@ -32,8 +33,8 @@ def home():
 def register():
     if request.method == 'POST':
         hashed_password = generate_password_hash(request.form['password'])
-        user = User(username=request.form['username'],
-                    email=request.form['email'], password=hashed_password)
+        user = all_users(username=request.form['username'],
+                         email=request.form['email'], password=hashed_password)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created!', 'success')
@@ -43,7 +44,7 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = User.query.filter_by(email=request.form['email']).first()
+        user = all_users.query.filter_by(email=request.form['email']).first()
         if user and check_password_hash(user.password, request.form['password']):
             # User is authenticated, proceed to log them in
             return redirect(url_for('dashboard'))
@@ -67,7 +68,7 @@ def dashboard():
 
 @app.route('/users')
 def show_users():
-    users = User.query.all()
+    users = all_users.query.all()
     return render_template('users.html', users=users)
 
 

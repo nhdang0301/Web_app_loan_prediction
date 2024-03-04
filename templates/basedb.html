@@ -37,17 +37,17 @@
     <div id="Home" class="tabcontent">
       <h3>Home</h3>
       <p>Home is where the heart is..</p>
-      <!-- <table border="1"> -->
-      <!-- Headers -->
-      <!-- <thead>
+      <table border="1">
+        <!-- Headers -->
+        <thead>
           <tr>
             {% for key in data[0].keys() %}
             <th>{{ key }}</th>
             {% endfor %}
           </tr>
-        </thead> -->
-      <!-- Data -->
-      <!-- <tbody>
+        </thead>
+        <!-- Data -->
+        <tbody>
           {% for row in data %}
           <tr>
             {% for value in row.values() %}
@@ -56,28 +56,13 @@
           </tr>
           {% endfor %}
         </tbody>
-      </table> -->
-
-      <h1>Upload Data</h1>
-      <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".csv, .xlsx" />
-        <input type="submit" value="Upload" />
-      </form>
+      </table>
     </div>
 
     <div id="News" class="tabcontent">
       <h3>News</h3>
       <p>Some news this fine day!</p>
       <h1>Google Sheets Data</h1>
-      <table border="1">
-        {% for row in values %}
-        <tr>
-          {% for cell in row %}
-          <td>{{ cell }}</td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </table>
     </div>
 
     <div id="Contact" class="tabcontent">

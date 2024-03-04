@@ -1,0 +1,75 @@
+body {
+    font-family: Poppins-Medium;
+}
+#chart {
+    width: 50%; /* Kích thước chiều rộng */
+    height: 100%; /* Kích thước chiều cao */
+}
+.chart-container {
+    box-shadow: 0 0 8px rgba(17, 17, 17, 0.1);
+    padding: 20px;
+    position: relative;
+    top: -500px;
+    max-width: 800px;
+    height: 500px;
+    margin-bottom: 200px;
+    margin-left: 450px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.form-container {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin-top: 20px;
+    margin-left: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    width: auto;
+}
+
+label {
+    font-family: Poppins-Medium;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    font-family: Poppins-Medium;
+    width: 90%;
+    color: #666666;
+    background-color: #e6e6e6;
+    border: none;
+    height: 50px;
+    padding-left: 20px;
+    display: block;
+    margin-bottom: 10px;
+    border-radius: 25px;
+    display: block;
+    font-size: medium;
+    margin-right: auto;
+}
+
+button[type="submit"] {
+    width: 50%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #1477e1;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+button[type="submit"]:hover {
+    background-color: darkblue;
+}

@@ -5,7 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
 import matplotlib as plt
 from flask import Flask, render_template, redirect, url_for, request, flash
-# chao ngay moi cac bro
+from flask import session, jsonify
+
+
+# Loan Prediction App
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
 
@@ -13,6 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zbhyszrxtobmsu:2c02c1585c0
 db = SQLAlchemy(app)
 
 
+# SQLALCHEMY
 class all_users(db.Model):
     __tablename__ = 'all_users'
     user_id = db.Column(db.Integer, primary_key=True)
@@ -47,6 +51,7 @@ def login():
         user = all_users.query.filter_by(email=request.form['email']).first()
         if user and check_password_hash(user.password, request.form['password']):
             # User is authenticated, proceed to log them in
+            session['logged_in'] = True
             return redirect(url_for('dashboard'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
@@ -55,22 +60,40 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
-    # # Reading the Excel file
-    # filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
-    # df = pd.read_csv(filepath, nrows=50)
+    # Reading the Excel file
+    filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
+    df = pd.read_csv(filepath, nrows=50)
 
-    # # Converting the dataframe to a dictionary for easier processing in the template
-    # data = df.to_dict(orient='records')
+    # Converting the dataframe to a dictionary for easier processing in the template
+    data = df.to_dict(orient='records')
 
-    # # Rendering the HTML template
-    return render_template('dashboard.html')
-    # return render_template('dashboard.html', data=data)
+    # Rendering the HTML template
+    return render_template('dashboard.html', data=data)
 
 
 @app.route('/users')
 def show_users():
     users = all_users.query.all()
     return render_template('users.html', users=users)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)  # Xóa trạng thái đăng nhập khỏi session
+    return redirect(url_for('login'))
+
+
+@app.route('/predict')
+def predict():
+    return render_template('predict.html')
+# API để cung cấp dữ liệu cho biểu đồ
+
+
+@app.route('/data')
+def data():
+    # Lấy dữ liệu từ cơ sở dữ liệu hoặc nơi khác
+    data = [10, 20, 30, 40, 50]
+    return jsonify(data)
 
 
 if __name__ == '__main__':

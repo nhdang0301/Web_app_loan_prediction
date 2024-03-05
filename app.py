@@ -52,7 +52,7 @@ def login():
         if user and check_password_hash(user.password, request.form['password']):
             # User is authenticated, proceed to log them in
             session['logged_in'] = True
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('predict'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return redirect(url_for('home'))

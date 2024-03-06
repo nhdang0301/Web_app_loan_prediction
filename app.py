@@ -71,7 +71,8 @@ def login():
         if user and check_password_hash(user.password, request.form['password']):
             # User is authenticated, proceed to log them in
             login_user(user)
-            return redirect(url_for('dashboard'))
+            # flash('You have successfully logged in.', 'success')
+            return render_template("predict.html", username=user)
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return redirect(url_for('home'))
@@ -95,7 +96,7 @@ def dashboard():
     data = df.to_dict(orient='records')
 
     # Rendering the HTML template
-    return render_template('dashboard.html', data=data)
+    return render_template('dashboard.html', data=data, user=current_user)
 
 
 @app.route('/users')

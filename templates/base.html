@@ -19,12 +19,40 @@
     />
 
     <script src="{{ url_for('static', filename='script.js')}}"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Login and Register</title>
   </head>
   <body>
     <!-- Hiển thị thông điệp flash -->
-    {% for message in get_flashed_messages() %} {{ message }} {% endfor %}
-    <!-- ... (phần còn lại của nội dung) ... -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      var category = "{{ messages[0][0] }}";
+      var message = "{{ messages[0][1] }}";
+      var icon =
+        category === "success"
+          ? "success"
+          : category === "info"
+          ? "info"
+          : "error";
+      var title =
+        category === "success"
+          ? "Success"
+          : category === "info"
+          ? "Info"
+          : "Error";
+
+      Swal.fire({
+        icon: icon,
+        title: title,
+        text: message,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    </script>
+    {% endif %} {% endwith %}
+
     <div class="container">
       <div class="header">
         <img

@@ -74,5 +74,12 @@
       <h3>About</h3>
       <p>Who we are and what we do.</p>
     </div>
+    <form method="POST" action="{{ url_for('logout_user') }}">
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
+
+    <form action="{{ url_for('predict') }}" method="get">
+      <button type="submit" class="predict-button">Go to Predict</button>
+    </form>
   </body>
 </html>

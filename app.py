@@ -6,6 +6,8 @@ import pandas as pd
 import matplotlib as plt
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask import session, jsonify
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import logout_user as logout
 
 
 # Loan Prediction App
@@ -15,17 +17,34 @@ app.secret_key = "NGUYENHAIDANG"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zbhyszrxtobmsu:2c02c1585c00f8bcbd33c90797f0234643ce135688a1b296372c0087badcf788@ec2-52-6-117-96.compute-1.amazonaws.com:5432/deohkrnac3mloe'
 db = SQLAlchemy(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 # SQLALCHEMY
-class all_users(db.Model):
+
+
+class all_users(UserMixin, db.Model):
     __tablename__ = 'all_users'
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
 
+    @property
+    def is_active(self):
+        return True
+
+    def get_id(self):
+        return (self.user_id)
+
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return all_users.query.get(int(user_id))
 
 
 @app.route('/')
@@ -51,14 +70,22 @@ def login():
         user = all_users.query.filter_by(email=request.form['email']).first()
         if user and check_password_hash(user.password, request.form['password']):
             # User is authenticated, proceed to log them in
-            session['logged_in'] = True
-            return redirect(url_for('predict'))
+            login_user(user)
+            return redirect(url_for('dashboard'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return redirect(url_for('home'))
 
 
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout_user():
+    logout()
+    return redirect(url_for('home'))
+
+
 @app.route('/dashboard')
+@login_required
 def dashboard():
     # Reading the Excel file
     filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
@@ -77,13 +104,8 @@ def show_users():
     return render_template('users.html', users=users)
 
 
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)  # Xóa trạng thái đăng nhập khỏi session
-    return redirect(url_for('login'))
-
-
 @app.route('/predict')
+@login_required
 def predict():
     return render_template('predict.html')
 # API để cung cấp dữ liệu cho biểu đồ

@@ -8,7 +8,10 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask import session, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_login import logout_user as logout
-
+import gspread
+from google.oauth2.service_account import Credentials
+import bcrypt
+import base64
 
 # Loan Prediction App
 app = Flask(__name__)
@@ -22,6 +25,10 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 # SQLALCHEMY
+# Setup
+gc = gspread.service_account(filename="creds.json")
+# Replace "test" with the actual name of your sheet
+sh = gc.open("test").sheet1
 
 
 class all_users(UserMixin, db.Model):
@@ -52,29 +59,83 @@ def home():
     return render_template('index.html')
 
 
+# @app.route('/signup', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         hashed_password = generate_password_hash(request.form['password'])
+#         user = all_users(username=request.form['username'],
+#                          email=request.form['email'], password=hashed_password)
+#         db.session.add(user)
+#         db.session.commit()
+#         flash('Your account has been created!', 'success')
+#         return redirect(url_for('home'))
+
 @app.route('/signup', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        hashed_password = generate_password_hash(request.form['password'])
-        user = all_users(username=request.form['username'],
-                         email=request.form['email'], password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+
+        # Check if email already exists in the sheet
+        records = sh.get_all_records()
+        for record in records:
+            if record['email'] == email:
+                flash('Email already registered. Please use a different email.', 'error')
+                return redirect(url_for('home'))
+
+        # Hash the password and encode it to Base64
+        hashed_password = bcrypt.hashpw(
+            password.encode('utf-8'), bcrypt.gensalt())
+        hashed_password_b64 = base64.b64encode(hashed_password).decode('utf-8')
+
+        # Append new user data to the sheet
+        sh.append_row([username, email, hashed_password_b64])
         flash('Your account has been created!', 'success')
         return redirect(url_for('home'))
 
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         user = all_users.query.filter_by(email=request.form['email']).first()
+#         if user and check_password_hash(user.password, request.form['password']):
+#             # User is authenticated, proceed to log them in
+#             login_user(user)
+#             # flash('You have successfully logged in.', 'success')
+#             return render_template("predict.html", username=user)
+#         else:
+#             flash('Login Unsuccessful. Please check email and password', 'danger')
+#     return redirect(url_for('home'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = all_users.query.filter_by(email=request.form['email']).first()
-        if user and check_password_hash(user.password, request.form['password']):
-            # User is authenticated, proceed to log them in
-            login_user(user)
-            # flash('You have successfully logged in.', 'success')
-            return render_template("predict.html", username=user)
-        else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
+        email = request.form['email']
+        password = request.form['password']
+
+        # Fetch all records from the sheet
+        records = sh.get_all_records()
+
+        # Check if the user exists and verify the password
+        for record in records:
+            if record['email'] == email:
+                # Decode the hashed password from Base64
+                stored_password_b64 = record['password']
+                stored_password = base64.b64decode(stored_password_b64)
+
+                # Check the provided password against the stored hash
+                if bcrypt.checkpw(password.encode('utf-8'), stored_password):
+                    # Authentication successful
+                    # Simple session example
+                    session['user'] = record['username']
+                    # flash('You have successfully logged in.', 'success')
+                    return redirect(url_for('predict_page'))
+                    # return render_template("predict.html", username=record['username'])
+
+        # If no record matches or password is incorrect
+        flash('Login Unsuccessful. Please check email and password', 'danger')
+
     return redirect(url_for('home'))
 
 
@@ -105,11 +166,19 @@ def show_users():
     return render_template('users.html', users=users)
 
 
+# @app.route('/predict')
+# @login_required
+# def predict():
+#     return render_template('predict.html')
+# # API để cung cấp dữ liệu cho biểu đồ
+
+
 @app.route('/predict')
-@login_required
-def predict():
-    return render_template('predict.html')
-# API để cung cấp dữ liệu cho biểu đồ
+def predict_page():
+    if 'user' not in session:
+        flash("Please log in to access this page", "info")
+        return redirect(url_for('login'))
+    return render_template("predict.html", username=session['user'])
 
 
 @app.route('/data')

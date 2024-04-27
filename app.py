@@ -1,8 +1,10 @@
 import psycopg2
 import os
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import pandas as pd
+import numpy as np
 import matplotlib as plt
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask import session, jsonify
@@ -77,6 +79,9 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
+        # Tạo timestamp hiện tại
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
         # Check if email already exists in the sheet
         records = sh.get_all_records()
         for record in records:
@@ -90,7 +95,7 @@ def register():
         hashed_password_b64 = base64.b64encode(hashed_password).decode('utf-8')
 
         # Append new user data to the sheet
-        sh.append_row([username, email, hashed_password_b64])
+        sh.append_row([username, email, hashed_password_b64, timestamp])
         flash('Your account has been created!', 'success')
         return redirect(url_for('home'))
 
@@ -183,9 +188,14 @@ def predict_page():
 
 @app.route('/data')
 def data():
-    # Lấy dữ liệu từ cơ sở dữ liệu hoặc nơi khác
-    data = [10, 20, 30, 40, 50]
-    return jsonify(data)
+    # # Lấy dữ liệu từ cơ sở dữ liệu hoặc nơi khác
+    # data = np.random.rand(5).tolist()
+    # return jsonify(data)
+    np.random.seed(42)
+    dates = pd.date_range(start="2024-01-01", periods=50,
+                          freq='D').strftime("%Y-%m-%d").tolist()
+    prices = np.random.normal(100, 15, size=20).cumsum().tolist()
+    return jsonify({'dates': dates, 'prices': prices})
 
 
 if __name__ == '__main__':

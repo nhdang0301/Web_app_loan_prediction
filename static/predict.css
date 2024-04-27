@@ -1,8 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 body {
   font-family: Poppins-Medium;
 }
 #chart {
-  width: 50%; /* Kích thước chiều rộng */
+  width: 100%; /* Kích thước chiều rộng */
   height: 100%; /* Kích thước chiều cao */
 }
 .chart-container {
@@ -22,13 +23,12 @@ body {
 .chart-container,
 .form-container {
   flex: 1;
-  margin-top: 20px;
+  margin-top: 70px;
 }
 .form-container {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   max-width: 400px;
-  margin-top: 20px;
-  margin-left: 20px;
+  margin-left: 200px;
   padding: 20px;
   border-radius: 5px;
   box-sizing: border-box;

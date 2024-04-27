@@ -10,9 +10,10 @@
     />
     <script src="{{ url_for('static', filename='predict.js')}}"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
   </head>
   <body>
-    <!-- <div class="container">
+    <div class="container">
       <div class="form-container">
         <form id="loanPredictionForm">
           <h2>Loan Prediction Form</h2>
@@ -43,7 +44,7 @@
       <label for="result">Result: </label>
     </div>
 
-    <script>
+    <!-- <script>
       // Sử dụng JavaScript để tải dữ liệu từ máy chủ và vẽ biểu đồ
       fetch("/data")
         .then((response) => response.json())
@@ -66,9 +67,124 @@
 
           Plotly.newPlot("chart", [trace], layout);
         });
-    </script>
+    </script> -->
+
     <form method="POST" action="{{ url_for('logout_user') }}">
       <button class="logout-button">Logout</button>
-    </form> -->
+    </form>
+    <!-- <script>
+      fetch("/data")
+        .then((response) => response.json())
+        .then((data) => {
+          var trace = {
+            x: ["A", "B", "C", "D", "E"],
+            y: data,
+            type: "bar",
+            marker: {
+              color: "rgb(158,202,225)",
+              line: {
+                color: "rgb(8,48,107)",
+                width: 1.5,
+              },
+            },
+          };
+
+          var layout = {
+            title: "Bar Chart",
+            xaxis: {
+              title: "Grade",
+            },
+            yaxis: {
+              title: "Value",
+            },
+          };
+          var config = {
+            responsive: true,
+            displayModeBar: false,
+          };
+          Plotly.newPlot("chart", [trace], layout, config);
+        });
+    </script> -->
+    <script>
+      WebFont.load({
+        google: {
+          families: ["Roboto"],
+        },
+      });
+
+      fetch("/data")
+        .then((response) => response.json())
+        .then((data) => {
+          var trace = {
+            x: data.dates,
+            y: data.prices,
+            type: "scatter",
+            mode: "lines",
+            line: {
+              color: "#2ca02c",
+              width: 2,
+              shape: "spline",
+            },
+            hoverinfo: "x+y",
+            hovertemplate: "%{x}<br>Price: %{y:$,.2f}<extra></extra>",
+            hoverlabel: {
+              bgcolor: "white", // Màu nền của tooltip
+              font: {
+                size: 14,
+                color: "black", // Màu chữ trong tooltip
+              },
+              bordercolor: false, // Màu viền của tooltip
+            },
+          };
+
+          var layout = {
+            title: "Stock Price Chart",
+            paper_bgcolor: "white",
+            plot_bgcolor: "white",
+            font: {
+              family: "Roboto, sans-serif",
+              weight: "bold",
+              color: "black",
+            },
+            xaxis: {
+              title: "Days",
+              showgrid: false,
+              zeroline: true,
+              linecolor: "black",
+              tickcolor: "black",
+              tickfont: {
+                color: "black",
+              },
+            },
+            yaxis: {
+              title: "Price (USD)",
+              showgrid: false,
+              zeroline: true,
+              linecolor: "black",
+              tickcolor: "black",
+              tickfont: {
+                color: "black",
+              },
+              rangemode: "tozero",
+            },
+            hovermode: "closest",
+          };
+
+          var config = {
+            responsive: true,
+            displayModeBar: false,
+          };
+
+          Plotly.newPlot("chart", [trace], layout, config);
+        });
+    </script>
+
+    <div class="sidebar">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
   </body>
 </html>

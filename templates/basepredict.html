@@ -12,174 +12,143 @@
     <script src="{{ url_for('static', filename='predict.js')}}"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- Icon -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
+      rel="stylesheet">
   </head>
   <body>
-    
-    <!-- <div class="container">
-      <div class="form-container">
-        <form id="loanPredictionForm">
-          <h2>Loan Prediction Form</h2>
-          <div class="form-group">
-            <label for="loanAmount">Loan Amount:</label>
-            <input id="loanAmount" name="loanAmount" required min="0" />
+
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <span class="material-icons-outlined">search</span>
+        </div>
+        <div class="header-right">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="material-icons-outlined">email</span>
+          <span class="material-icons-outlined">account_circle</span>
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <span class="material-icons-outlined">shopping_cart</span> STORE
           </div>
-          <div class="form-group">
-            <label for="income">Income:</label>
-            <input id="income" name="income" required min="0" />
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+
+        <ul class="sidebar-list">
+          <li class="sidebar-list-item">
+            <a href="#" target="_blank">
+              <span class="material-icons-outlined">dashboard</span> Dashboard
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="#" target="_blank">
+              <span class="material-icons-outlined">inventory_2</span> Products
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="#" target="_blank">
+              <span class="material-icons-outlined">category</span> Categories
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="#" target="_blank">
+              <span class="material-icons-outlined">groups</span> Customers
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="#" target="_blank">
+              <span class="material-icons-outlined">fact_check</span> Inventory
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="#" target="_blank">
+              <span class="material-icons-outlined">poll</span> Reports
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="#" target="_blank">
+              <span class="material-icons-outlined">settings</span> Settings
+            </a>
+          </li>
+        </ul>
+      </aside>
+      <!-- End Sidebar -->
+
+      <!-- Main -->
+      <main class="main-container">
+        <div class="main-title">
+          <h2>DASHBOARD</h2>
+        </div>
+
+        <div class="main-cards">
+
+          <div class="card">
+            <div class="card-inner">
+              <h3>PRODUCTS</h3>
+              <span class="material-icons-outlined">inventory_2</span>
+            </div>
+            <h1>249</h1>
           </div>
-          <div class="form-group">
-            <label for="creditScore">Credit Score:</label>
-            <input id="creditScore" name="creditScore" required min="0" />
+
+          <div class="card">
+            <div class="card-inner">
+              <h3>CATEGORIES</h3>
+              <span class="material-icons-outlined">category</span>
+            </div>
+            <h1>25</h1>
           </div>
-          <div class="form-group">
-            <label for="collateral">Credit Score:</label>
-            <input id="collateral" name="collateral" required min="0" />
+
+          <div class="card">
+            <div class="card-inner">
+              <h3>CUSTOMERS</h3>
+              <span class="material-icons-outlined">groups</span>
+            </div>
+            <h1>1500</h1>
           </div>
-          <button type="submit">Predict</button>
-        </form>
-      </div>
-      <div class="chart-container">
-        <div id="chart"></div>
-      </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <h3>ALERTS</h3>
+              <span class="material-icons-outlined">notification_important</span>
+            </div>
+            <h1>56</h1>
+          </div>
+
+        </div>
+
+        <div class="charts">
+
+          <div class="charts-card">
+            <h2 class="chart-title">Top 5 Products</h2>
+            <div id="bar-chart"></div>
+          </div>
+
+          <div class="charts-card">
+            <h2 class="chart-title">Purchase and Sales Orders</h2>
+            <div id="area-chart"></div>
+          </div>
+
+        </div>
+      </main>
+      <!-- End Main -->
+
     </div>
-    <div class="form-container">
-      <label for="result">Result: </label>
-    </div> -->
-
-    <!-- <script>
-      // Sử dụng JavaScript để tải dữ liệu từ máy chủ và vẽ biểu đồ
-      fetch("/data")
-        .then((response) => response.json())
-        .then((data) => {
-          var trace = {
-            x: ["A", "B", "C", "D", "E"],
-            y: data,
-            type: "bar",
-          };
-
-          var layout = {
-            title: "Interactive Chart",
-            xaxis: {
-              title: "X-axis",
-            },
-            yaxis: {
-              title: "Y-axis",
-            },
-          };
-
-          Plotly.newPlot("chart", [trace], layout);
-        });
-    </script> -->
-
-    <form method="POST" action="{{ url_for('logout_user') }}">
-      <button class="logout-button">Logout</button>
-    </form>
-    <!-- <script>
-      fetch("/data")
-        .then((response) => response.json())
-        .then((data) => {
-          var trace = {
-            x: ["A", "B", "C", "D", "E"],
-            y: data,
-            type: "bar",
-            marker: {
-              color: "rgb(158,202,225)",
-              line: {
-                color: "rgb(8,48,107)",
-                width: 1.5,
-              },
-            },
-          };
-
-          var layout = {
-            title: "Bar Chart",
-            xaxis: {
-              title: "Grade",
-            },
-            yaxis: {
-              title: "Value",
-            },
-          };
-          var config = {
-            responsive: true,
-            displayModeBar: false,
-          };
-          Plotly.newPlot("chart", [trace], layout, config);
-        });
-    </script> -->
-    <!-- <script>
-      WebFont.load({
-        google: {
-          families: ["Roboto"],
-        },
-      });
-
-      fetch("/data")
-        .then((response) => response.json())
-        .then((data) => {
-          var trace = {
-            x: data.dates,
-            y: data.prices,
-            type: "scatter",
-            mode: "lines",
-            line: {
-              color: "#2ca02c",
-              width: 2,
-              shape: "spline",
-            },
-            hoverinfo: "x+y",
-            hovertemplate: "%{x}<br>Price: %{y:$,.2f}<extra></extra>",
-            hoverlabel: {
-              bgcolor: "white", // Màu nền của tooltip
-              font: {
-                size: 14,
-                color: "black", // Màu chữ trong tooltip
-              },
-              bordercolor: false, // Màu viền của tooltip
-            },
-          };
-
-          var layout = {
-            title: "Stock Price Chart",
-            paper_bgcolor: "white",
-            plot_bgcolor: "white",
-            font: {
-              family: "Roboto, sans-serif",
-              weight: "bold",
-              color: "black",
-            },
-            xaxis: {
-              title: "Days",
-              showgrid: false,
-              zeroline: true,
-              linecolor: "black",
-              tickcolor: "black",
-              tickfont: {
-                color: "black",
-              },
-            },
-            yaxis: {
-              title: "Price (USD)",
-              showgrid: false,
-              zeroline: true,
-              linecolor: "black",
-              tickcolor: "black",
-              tickfont: {
-                color: "black",
-              },
-              rangemode: "tozero",
-            },
-            hovermode: "closest",
-          };
-
-          var config = {
-            responsive: true,
-            displayModeBar: false,
-          };
-
-          Plotly.newPlot("chart", [trace], layout, config);
-        });
-    </script> -->
+  
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js
     "></script>
@@ -193,5 +162,6 @@
       integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.49.0/apexcharts.min.js" integrity="sha512-NpRqjS1hba1uc6270PmwsKwQti3CSCDkZD9/dlen3+ytOUb/azIyuaGtyewUkjazLMSdl7Zy2CVWMvGxR6vFWg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </body>
 </html>

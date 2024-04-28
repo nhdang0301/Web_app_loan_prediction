@@ -26,7 +26,7 @@ const barChartOptions = {
       data: [10, 8, 6, 4, 2],
       name: 'Products',
     },
-  ],
+  ],z
   chart: {
     type: 'bar',
     background: 'transparent',

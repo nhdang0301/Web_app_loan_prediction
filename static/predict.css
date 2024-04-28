@@ -3,7 +3,7 @@ body {
   padding: 0;
   background-color: #1d2634;
   color: #9e9ea4;
-  font-family: 'Poppinns', Tahoma, Geneva, Verdana, sans-serif
+  font-family: 'Poppinns', sans-serif
 }
 
 .material-icons-outlined {
@@ -86,7 +86,14 @@ body {
   text-decoration: none;
   color: #9e9ea4;
 }
+a:link, a:visited {
+}
 
+a:link:active, a:visited:active {
+  color: #2e7d32;
+}
+a:active {
+  color: red; }
 .sidebar-responsive {
   display: inline !important;
   position: absolute;

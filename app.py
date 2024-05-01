@@ -14,12 +14,17 @@ import gspread
 from google.oauth2.service_account import Credentials
 import bcrypt
 import base64
+from datetime import timedelta
 
 # Loan Prediction App
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zbhyszrxtobmsu:2c02c1585c00f8bcbd33c90797f0234643ce135688a1b296372c0087badcf788@ec2-52-6-117-96.compute-1.amazonaws.com:5432/deohkrnac3mloe'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://loan_prediction_app_user:lrBo8SP9GfQUVJjnl9taM8XQFbKISXqI@dpg-cooruf779t8c73fbptbg-a.oregon-postgres.render.com/loan_prediction_app'
+
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(
+    minutes=20)  # Set session lifetime to 1 minute
+
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -39,6 +44,8 @@ class all_users(UserMixin, db.Model):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    created_at = db.Column(db.TIMESTAMP, nullable=False,
+                           default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))  # Thêm cột mới
 
     @property
     def is_active(self):
@@ -61,57 +68,32 @@ def home():
     return render_template('index.html')
 
 
-# @app.route('/signup', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         hashed_password = generate_password_hash(request.form['password'])
-#         user = all_users(username=request.form['username'],
-#                          email=request.form['email'], password=hashed_password)
-#         db.session.add(user)
-#         db.session.commit()
-#         flash('Your account has been created!', 'success')
-#         return redirect(url_for('home'))
-
 @app.route('/signup', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        # Lấy thông tin từ form
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
 
-        # Tạo timestamp hiện tại
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
+        existing_user = all_users.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already registered. Please use a different email.', 'error')
+            return redirect(url_for('home'))
 
-        # Check if email already exists in the sheet
-        records = sh.get_all_records()
-        for record in records:
-            if record['email'] == email:
-                flash('Email already registered. Please use a different email.', 'error')
-                return redirect(url_for('home'))
+        # Mã hóa mật khẩu
+        hashed_password = generate_password_hash(password)
 
-        # Hash the password and encode it to Base64
-        hashed_password = bcrypt.hashpw(
-            password.encode('utf-8'), bcrypt.gensalt())
-        hashed_password_b64 = base64.b64encode(hashed_password).decode('utf-8')
+        # Tạo một bản ghi mới trong cơ sở dữ liệu
+        new_user = all_users(username=username, email=email,
+                             password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
 
-        # Append new user data to the sheet
-        sh.append_row([username, email, hashed_password_b64, timestamp])
         flash('Your account has been created!', 'success')
         return redirect(url_for('home'))
 
-
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         user = all_users.query.filter_by(email=request.form['email']).first()
-#         if user and check_password_hash(user.password, request.form['password']):
-#             # User is authenticated, proceed to log them in
-#             login_user(user)
-#             # flash('You have successfully logged in.', 'success')
-#             return render_template("predict.html", username=user)
-#         else:
-#             flash('Login Unsuccessful. Please check email and password', 'danger')
-#     return redirect(url_for('home'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -119,26 +101,19 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        # Fetch all records from the sheet
-        records = sh.get_all_records()
+        # Fetch user from the database
+        user = all_users.query.filter_by(email=email).first()
 
         # Check if the user exists and verify the password
-        for record in records:
-            if record['email'] == email:
-                # Decode the hashed password from Base64
-                stored_password_b64 = record['password']
-                stored_password = base64.b64decode(stored_password_b64)
+        if user and check_password_hash(user.password, password):
+            # Authentication successful
+            # Initialize session
+            session['user'] = user.username
+            # flash('You have successfully logged in.', 'success')
+            return redirect(url_for('predict_page'))
+            # return render_template("predict.html", username=user.username)
 
-                # Check the provided password against the stored hash
-                if bcrypt.checkpw(password.encode('utf-8'), stored_password):
-                    # Authentication successful
-                    # Simple session example
-                    session['user'] = record['username']
-                    # flash('You have successfully logged in.', 'success')
-                    return redirect(url_for('predict_page'))
-                    # return render_template("predict.html", username=record['username'])
-
-        # If no record matches or password is incorrect
+        # If no user matches or password is incorrect
         flash('Login Unsuccessful. Please check email and password', 'danger')
 
     return redirect(url_for('home'))
@@ -151,18 +126,18 @@ def logout_user():
     return redirect(url_for('home'))
 
 
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    # Reading the Excel file
-    filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
-    df = pd.read_csv(filepath, nrows=50)
+# @app.route('/dashboard')
+# @login_required
+# def dashboard():
+#     # Reading the Excel file
+#     filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
+#     df = pd.read_csv(filepath, nrows=50)
 
-    # Converting the dataframe to a dictionary for easier processing in the template
-    data = df.to_dict(orient='records')
+#     # Converting the dataframe to a dictionary for easier processing in the template
+#     data = df.to_dict(orient='records')
 
-    # Rendering the HTML template
-    return render_template('dashboard.html', data=data, user=current_user)
+#     # Rendering the HTML template
+#     return render_template('dashboard.html', data=data, user=current_user)
 
 
 @app.route('/users')
@@ -177,7 +152,7 @@ def show_users():
 #     return render_template('predict.html')
 # # API để cung cấp dữ liệu cho biểu đồ
 
-
+@login_required
 @app.route('/predict')
 def predict_page():
     if 'user' not in session:

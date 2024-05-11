@@ -110,34 +110,19 @@ def login():
             # Initialize session
             session['user'] = user.username
             # flash('You have successfully logged in.', 'success')
-            return redirect(url_for('predict_page'))
-            # return render_template("predict.html", username=user.username)
-
+            return redirect(url_for('dashboard_page'))
         # If no user matches or password is incorrect
         flash('Login Unsuccessful. Please check email and password', 'danger')
 
     return redirect(url_for('home'))
 
 
-@app.route('/logout', methods=['POST'])
-@login_required
-def logout_user():
-    logout()
-    return redirect(url_for('home'))
-
-
-# @app.route('/dashboard')
-# @login_required
-# def dashboard():
-#     # Reading the Excel file
-#     filepath = 'E:\Web_app_loan_prediction\data\Raw_data.csv'
-#     df = pd.read_csv(filepath, nrows=50)
-
-#     # Converting the dataframe to a dictionary for easier processing in the template
-#     data = df.to_dict(orient='records')
-
-#     # Rendering the HTML template
-#     return render_template('dashboard.html', data=data, user=current_user)
+@app.route('/logout')
+def logout():
+    # Xóa session user
+    session.pop('user', None)
+    # Chuyển hướng người dùng về trang đăng nhập (hoặc trang chủ, tùy bạn)
+    return redirect(url_for('login'))
 
 
 @app.route('/users')
@@ -146,31 +131,13 @@ def show_users():
     return render_template('users.html', users=users)
 
 
-# @app.route('/predict')
-# @login_required
-# def predict():
-#     return render_template('predict.html')
-# # API để cung cấp dữ liệu cho biểu đồ
-
 @login_required
-@app.route('/predict')
-def predict_page():
+@app.route('/dashboard')
+def dashboard_page():
     if 'user' not in session:
         flash("Please log in to access this page", "info")
         return redirect(url_for('login'))
-    return render_template("predict.html", username=session['user'])
-
-
-@app.route('/data')
-def data():
-    # # Lấy dữ liệu từ cơ sở dữ liệu hoặc nơi khác
-    # data = np.random.rand(5).tolist()
-    # return jsonify(data)
-    np.random.seed(42)
-    dates = pd.date_range(start="2024-01-01", periods=50,
-                          freq='D').strftime("%Y-%m-%d").tolist()
-    prices = np.random.normal(100, 15, size=20).cumsum().tolist()
-    return jsonify({'dates': dates, 'prices': prices})
+    return render_template("dashboard.html", username=session['user'])
 
 
 if __name__ == '__main__':

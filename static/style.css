@@ -74,7 +74,7 @@ h3 {
   outline: none;
   transition: background-color 0.3s;
   font-weight: bold;
-  border-radius: 0px;
+  border-radius: 6px;
 }
 
 .tablinks:last-child {
@@ -131,6 +131,7 @@ button {
   margin-top: 10px;
   font-weight: bold;
   transition: background-color 0.3s; /* Smooth transition for background color */
+  margin-right: 30px;
 }
 
 button:hover {

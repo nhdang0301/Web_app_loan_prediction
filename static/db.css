@@ -14,11 +14,11 @@ body {
 
 .grid-container {
   display: grid;
-  grid-template-columns: 280px 1fr 1fr 1fr;
+  grid-template-columns: 280px 1fr;
   grid-template-rows: 0.2fr 3fr;
   grid-template-areas:
-    "sidebar header header header"
-    "sidebar main main main";
+    "sidebar header"
+    "sidebar main";
   height: 100vh;
 }
 
@@ -170,8 +170,9 @@ a:hover {
   color: #374259;
   font-weight: 500;
   background-color: #cde8e5;
-  margin: 10px 10px 0px 10px;
+  margin: 20px 10px 0px 10px;
   border-radius: 10px;
+  height: 95%;
 }
 
 .main-title {
@@ -304,4 +305,12 @@ a:hover {
   .hedaer-left {
     display: none;
   }
+}
+
+.content {
+  display: none;
+}
+
+.content.active {
+  display: block;
 }

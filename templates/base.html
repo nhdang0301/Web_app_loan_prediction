@@ -23,7 +23,7 @@
     <title>Credit Risk Management</title>
     <link
       rel="icon"
-      href="https://scontent.fsgn2-6.fna.fbcdn.net/v/t1.15752-9/432766582_931239632344852_5232891900910373336_n.png?_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeEVNNmZgkljQLdpfB-3FtvKLHmt7BSwaVUsea3sFLBpVe0g6wmh0heN9NS3Ih8N9xfBmpFJzGuzb3TxBKOQrTZj&_nc_ohc=N1qg6A_82EsAb4kd6df&_nc_ht=scontent.fsgn2-6.fna&oh=03_AdWntXe2CSLSBXFyUxmw2pLtfzrWC_4-T9pu2_KPYRcOJQ&oe=66444EDC"
+      href="{{ url_for('static', filename='icon.png')}}"
       type="image/png"
     />
   </head>
@@ -61,10 +61,11 @@
     <div class="container">
       <div class="header">
         <img
-          src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t1.15752-9/432766582_931239632344852_5232891900910373336_n.png?_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeEVNNmZgkljQLdpfB-3FtvKLHmt7BSwaVUsea3sFLBpVe0g6wmh0heN9NS3Ih8N9xfBmpFJzGuzb3TxBKOQrTZj&_nc_ohc=N1qg6A_82EsAb4kd6df&_nc_ht=scontent.fsgn2-6.fna&oh=03_AdWntXe2CSLSBXFyUxmw2pLtfzrWC_4-T9pu2_KPYRcOJQ&oe=66444EDC"
+          src="{{ url_for('static', filename='icon.png') }}"
           alt="Logo"
           class="logo"
         />
+
         <!-- Added this line -->
         <h2 class="welcome">Welcome to Loan Prediction App</h2>
       </div>

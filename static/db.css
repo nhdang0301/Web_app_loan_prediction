@@ -416,3 +416,9 @@ button {
 button:hover {
   background-color: #45a049; /* Màu tối hơn khi hover */
 }
+
+#search-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

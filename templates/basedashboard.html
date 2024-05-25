@@ -136,13 +136,13 @@
         </div>
         <div class="charts">
           <div class="charts-card">
-            <h2 class="chart-title">Funded Amount vs Expected Loss bar chart</h2>
+            <h2 class="chart-title">Funded Amount vs Expected Loss Bar Chart</h2>
             <canvas id="myChart"></canvas>
           </div>
 
           <div class="charts-card">
-            <h2 class="chart-title">Purchase and Sales Orders</h2>
-            <canvas id="termPieChart"></canvas>
+            <h2 class="chart-title">Term Distribution Pie Chart</h2>
+            <canvas id="termPieChart" width="300" height="280"></canvas>
           </div>
         </div>
       </main>
@@ -204,14 +204,16 @@
     <div id="table" class="content">
       <main class="main-container">
         <div class="main-title">
-          <h1>Tracking Old Customer</h1>
+          <h1>Customer Tracking</h1>
         </div>
         <div class="search-container">
           <input type="text" id="search-input" placeholder="Enter customer ID..." />
           <button id="search-button" onclick="searchCustomer()">Search</button>
         </div>
         <!-- Khu vực hiển thị kết quả -->
+        <div class="search-content">
         <div id="search-results"></div>
+      </div>
         </div>
       </main>
     </div>

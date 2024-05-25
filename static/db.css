@@ -250,6 +250,10 @@ a:hover {
   box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
   height: 100%;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 .chart-title {
   display: flex;
@@ -378,6 +382,7 @@ a:hover {
 }
 
 .data-card {
+  width: 50%;
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

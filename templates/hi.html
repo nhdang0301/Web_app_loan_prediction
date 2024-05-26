@@ -2,77 +2,82 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Expected Loss Marker on a Scale</title>
+    <title>Vertical Bar Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Include the annotation plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
   </head>
   <body>
-    <div style="width: 80%; margin: auto">
-      <canvas id="lossScale"></canvas>
-    </div>
-
+    <canvas id="myChart" width="800" height="400"></canvas>
     <script>
-      const ctx = document.getElementById("lossScale").getContext("2d");
-      const customerSpecificLoss = 633.61; // The specific Expected Loss of the customer
-
-      const config = {
-        type: "bar",
-        data: {
-          labels: [""],
-          datasets: [
-            {
-              label: "Expected Loss",
-              data: [customerSpecificLoss],
-              backgroundColor: "rgba(255, 99, 132, 0.2)",
-              borderColor: "rgba(255, 99, 132, 1)",
-              borderWidth: 1,
-              barThickness: 40, // Set the bar thickness to 10 pixels
-            },
-          ],
-        },
-        options: {
-          indexAxis: "y",
-          scales: {
-            x: {
-              beginAtZero: true,
-            },
-            y: {
-              display: false,
-            },
+      document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var myChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+            ], // X-axis labels
+            datasets: [
+              {
+                label: "Dataset 1", // Legend
+                data: [65, 59, -80, 81, 56, 55, 40], // Y-values for dataset 1
+                backgroundColor: "rgba(255, 99, 132, 0.2)", // Color for bars
+                borderColor: "rgba(255, 99, 132, 1)", // Border color for bars
+                borderWidth: 1,
+              },
+              {
+                label: "Dataset 2", // Legend
+                data: [-28, 48, -40, 19, 86, 27, 90], // Y-values for dataset 2
+                backgroundColor: "rgba(54, 162, 235, 0.2)", // Color for bars
+                borderColor: "rgba(54, 162, 235, 1)", // Border color for bars
+                borderWidth: 1,
+              },
+            ],
           },
-          plugins: {
-            legend: {
-              display: false,
-            },
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  return `Expected Loss: $${context.raw}`;
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  // Include a dollar sign in the ticks and allow negative values
+                  callback: function (value, index, values) {
+                    return value.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    });
+                  },
                 },
               },
             },
-            annotation: {
-              annotations: {
-                labelAnnotation: {
-                  type: "label",
-                  content: `Your Expected Loss is: $${customerSpecificLoss}`,
-                  position: "center",
-                  xAdjust: 0,
-                  yAdjust: -100,
-                  backgroundColor: "rgba(255, 255, 255, 0.7)",
-                  font: {
-                    size: 14,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (tooltipItem) {
+                    return (
+                      tooltipItem.dataset.label +
+                      ": " +
+                      tooltipItem.raw.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      })
+                    );
                   },
                 },
               },
             },
           },
-        },
-      };
-
-      new Chart(ctx, config);
+        });
+      });
     </script>
   </body>
 </html>

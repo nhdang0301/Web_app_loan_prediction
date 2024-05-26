@@ -76,46 +76,177 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function initializeProductsCharts() {
     if (products.classList.contains('active')) {
-      // Sample data for products scatter chart
-      var sampleScatterData = [
-        {x: 1, y: 2},
-        {x: 2, y: 3},
-        {x: 3, y: 1},
-        {x: 4, y: 4},
-        {x: 5, y: 5}
-      ];
+      fetch('/annual-dti-histogram')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          const roundedLabels = data.labels.map(label => parseFloat(label).toFixed(2));
 
-      // Initialize the scatter plot for products tab
-      var ctx = document.getElementById("productsScatterChart").getContext("2d");
-      var productsScatterChart = new Chart(ctx, {
-        type: "scatter",
-        data: {
-          datasets: [{
-            label: "Sample Data",
-            data: sampleScatterData,
-            backgroundColor: "rgba(75, 192, 192, 0.6)",
-            borderColor: "rgba(75, 192, 192, 1)"
-          }]
-        },
-        options: {
-          scales: {
-            xAxes: [{
-              type: 'linear',
-              position: 'bottom',
-              scaleLabel: {
-                display: true,
-                labelString: 'X Axis'
+          // Initialize the histogram chart with fetched data
+          var ctxHistogram = document.getElementById("histogramChart").getContext("2d");
+          var histogramChart = new Chart(ctxHistogram, {
+            type: "bar",  // Set the default chart type to bar
+            data: {
+              labels: roundedLabels,
+              datasets: [{
+                label: "DTI Distribution",
+                type: "bar",  // Specify chart type for this dataset explicitly
+                data: data.values,
+                backgroundColor: "rgba(75, 192, 192, 0.6)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1
+              }, {
+                label: "Trend Line",
+                type: "line",  // Specify chart type for this dataset as line
+                data: data.values,  // Assume you want to use the same data for the line
+                borderColor: "rgba(255, 99, 132, 1)",
+                borderWidth: 2,
+                fill: false
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    stepSize: 1,
+                    beginAtZero: true
+                  }
+                }],
+                xAxes: [{  // Adding configuration for the x-axis
+                  ticks: {
+                    callback: function(value, index, values) {
+                      // Check if value can be converted to a float
+                      if (!isNaN(parseFloat(value))) {
+                        return parseFloat(value).toFixed(2); // Rounds the value to 2 decimal places
+                      }
+                      return value; // Return the original value if it's not a number
+                    }
+                  }
+                }]
               }
-            }],
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: 'Y Axis'
-              }
-            }]
-          }
-        }
-      });
+            }
+          });
+        });
+      fetch('/loan-data')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          // Initialize the pie chart with fetched data
+          var ctxPie = document.getElementById("loanPieChart").getContext("2d");
+          var loanPieChart = new Chart(ctxPie, {
+            type: "pie",
+            data: {
+              labels: data.labels,  // ["Short Term", "Medium Term", "Long Term"]
+              datasets: [{
+                label: "Loan Status Distribution",
+                data: data.values,
+                backgroundColor: [
+                  "rgba(255, 99, 132, 0.6)",
+                  "rgba(54, 162, 235, 0.6)",
+                  "rgba(75, 192, 192, 0.6)"
+                ],
+                borderColor: [
+                  "rgba(255, 99, 132, 1)",
+                  "rgba(54, 162, 235, 1)",
+                  "rgba(75, 192, 192, 1)"
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+                responsive: false,
+           }
+          });
+        });    
+        fetch('/loan-purpose-data')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+            var ctx = document.getElementById('polarAreaChart').getContext('2d');
+            var polarAreaChart = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Loan Purposes',
+                        data: data.data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: true,
+                }
+            });
+        })
+        .catch(error => console.error('Error loading the polar area chart data:', error));     
+
+        var ctx = document.getElementById('verticalbarChart').getContext('2d');
+        var verticalbarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'], // X-axis labels
+                datasets: [{
+                    label: 'Total Funded Amount', // Legend
+                    data: [65, 59, -80, 81, 56, 55, 40], // Y-values for dataset 1
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color for bars
+                    borderColor: 'rgba(255, 99, 132, 1)', // Border color for bars
+                    borderWidth: 1
+                }, {
+                    label: 'Total Expected Loss', // Legend
+                    data: [-28, 48, -40, 19, 86, 27, 90], // Y-values for dataset 2
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Color for bars
+                    borderColor: 'rgba(54, 162, 235, 1)', // Border color for bars
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            // Include a dollar sign in the ticks and allow negative values
+                            callback: function(value, index, values) {
+                                return value.toLocaleString("en-US", {style:"currency", currency:"USD"});
+                            }
+                        }
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.dataset.label + ': ' + tooltipItem.raw.toLocaleString("en-US", {style:"currency", currency:"USD"});
+                            }
+                        }
+                    }
+                }
+            }
+        });   
     }
   }
 

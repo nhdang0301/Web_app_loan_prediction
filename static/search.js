@@ -13,6 +13,7 @@ function searchCustomer() {
   fetch(`/search?customer_id=${encodeURIComponent(customerId)}`)
     .then(response => response.json())
     .then(data => {
+      console.log(data);
       const resultsContainer = document.getElementById('search-results');
       const chartContainer = document.getElementById('resultChart');
       if (data.success) {
@@ -40,32 +41,81 @@ function searchCustomer() {
       resultsContainer.innerHTML = `<div>Error fetching customer details. Please try again.</div>`;
     });
 }
-
 function updateChart(data) {
-  const ctx = document.getElementById('resultChart').getContext('2d');
-  // Destroy the previous chart if exists
-  if (window.resultChart) window.resultChart.destroy();
-  window.resultChart = new Chart(ctx, {
+  const ctx = document.getElementById('elChart').getContext('2d');
+  const minEL = parseFloat(data.min_el);
+  const maxEL = parseFloat(data.max_el);
+  const elValue = parseFloat(data.el);
+
+  if (window.barChart) {
+    window.barChart.destroy(); // Xóa biểu đồ cũ nếu đã tồn tại
+  }
+
+  window.barChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: ['Expected Loss'],
       datasets: [{
-        label: 'Expected Loss',
-        data: [data.el],
-        backgroundColor: ['rgba(54, 162, 235, 0.2)'],
-        borderColor: ['rgba(54, 162, 235, 1)'],
-        borderWidth: 1
+        label: 'Expected Loss (EL)',
+        data: [elValue],
+        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+        borderColor: ['rgba(255, 99, 132, 1)'],
+        borderWidth: 1,
+        barThickness: 30
       }]
     },
     options: {
+      indexAxis: 'y',  // Thiết lập trục chỉ số là Y
+      maintainAspectRatio: false,
+      aspectRatio: 3,  // Tỉ lệ khung hình
       scales: {
+        x: {
+          beginAtZero: true,
+          max: maxEL,
+          ticks: {
+            stepSize: 1,
+            callback: function(value) {
+              return '$' + value;  // Thêm ký hiệu đô la trước các giá trị trên trục X
+            }
+          }
+        },
         y: {
-          beginAtZero: true
+          display: false  // Ẩn trục Y
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `Expected Loss: $${context.raw.toFixed(2)}`;
+            }
+          }
+        },
+        annotation: {
+          annotations: {
+            labelAnnotation: {
+              type: 'label',
+              content: `Your Expected Loss is: $${elValue.toFixed(2)}`,
+              position: 'center',
+              xAdjust: 15, // Điều chỉnh này có thể cần thay đổi tùy theo kích thước của biểu đồ
+              yAdjust: 0,
+              backgroundColor: 'rgba(255, 255, 255, 0.7)',
+              font: {
+      
+              }
+            }
+          }
         }
       }
     }
   });
 }
+
+
+
 
 function printCustomerDetails() {
   const content = document.getElementById('search-results').innerHTML;

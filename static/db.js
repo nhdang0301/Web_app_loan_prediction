@@ -51,3 +51,18 @@ document.querySelectorAll('nav li').forEach(link => {
   });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  var form = document.querySelector('form');
+  form.onsubmit = function(event) {
+      event.preventDefault();  // Prevent the form from submitting normally
+
+      // Retrieve the message display area
+      var messageDiv = document.getElementById('message');
+
+      // Set the message
+      messageDiv.textContent = "Khách hàng đủ điều kiện cấp hạn mức tín dụng";
+
+      // Optionally, if you want to submit the form after setting the message
+      // form.submit();
+  };
+});

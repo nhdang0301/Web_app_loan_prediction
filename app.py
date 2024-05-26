@@ -1,3 +1,4 @@
+import random
 import psycopg2
 import os
 from datetime import datetime
@@ -193,10 +194,26 @@ def dashboard_page():
     total_expectedloss = db.session.query(
         func.sum(expectedloss.el)).scalar() or 0
     formatted_total_expectedloss = format(int(total_expectedloss), ',')
+    # AVG income
+    avg_inc = db.session.query(
+        func.avg(loan_data_preprocessed.annual_inc)).scalar() or 0
+    formatted_avg_inc = format(int(avg_inc), ',')
+    # AVG income
+    avg_installment = db.session.query(
+        func.avg(loan_data_preprocessed.installment)).scalar() or 0
+    formatted_avg_installment = format(int(avg_installment), ',')
+    # AVG dti
+    avg_dti = db.session.query(
+        func.avg(loan_data_preprocessed.dti)).scalar() or 0
+    formatted_avg_dti = format(avg_dti, '.2f') + '%'
+    # AVG interest rate
+    avg_int_rate = db.session.query(
+        func.avg(loan_data_preprocessed.int_rate)).scalar() or 0
+    formatted_avg_int_rate = format(avg_int_rate, '.2f') + '%'
     # In ra bảng ghi
     expectedlosses = expectedloss.query.limit(10).all()
 
-    return render_template("dashboard.html", username=session['user'], expectedlosses=expectedlosses, total_funded_amnt=formatted_total_funded_amnt, total_customers=formatted_total_customers, avg_pd=formatted_avg_pd, total_expectedloss=formatted_total_expectedloss)
+    return render_template("dashboard.html", username=session['user'], expectedlosses=expectedlosses, total_funded_amnt=formatted_total_funded_amnt, total_customers=formatted_total_customers, avg_pd=formatted_avg_pd, total_expectedloss=formatted_total_expectedloss, avg_inc=formatted_avg_inc, avg_dti=formatted_avg_dti, avg_int_rate=formatted_avg_int_rate, avg_installment=formatted_avg_installment)
 
 
 @app.route('/total-data')
@@ -212,20 +229,13 @@ def total_data():
     })
 
 
-@app.route('/scatter-data')
-def scatter_data():
-    results = expectedloss.query.all()  # Fetch your data here
-    data = [{
-        "ProbabilityOfDefault": r.pd,
-        "ExpectedLoss": r.el
-    } for r in results]
-    return jsonify(data)
-
-
 @app.route('/search')
 def search_customer():
     customer_id = request.args.get('customer_id')
     customer = expectedloss.query.get(customer_id)
+    min_el = db.session.query(db.func.min(expectedloss.el)).scalar()
+    max_el = db.session.query(db.func.max(expectedloss.el)).scalar()
+
     if customer:
         return jsonify({
             'success': True,
@@ -233,10 +243,12 @@ def search_customer():
             'pd': customer.pd,
             'lgd': customer.lgd,
             'ead': customer.ead,
-            'el': customer.el
+            'el': customer.el,
+            'min_el': min_el,
+            'max_el': max_el
         })
     else:
-        return jsonify({'success': False})
+        return jsonify({'success': False, 'min_el': min_el, 'max_el': max_el})
 
 
 @app.route('/term-data')
@@ -249,6 +261,56 @@ def term_data():
         "labels": terms,
         "values": counts
     })
+
+
+@app.route('/loan-purpose-data')
+def loan_purpose_data():
+    data = db.session.query(
+        loan_data_preprocessed.purpose,
+        db.func.count(loan_data_preprocessed.id)
+    ).group_by(loan_data_preprocessed.purpose).all()
+
+    purposes = [item[0] for item in data]
+    counts = [item[1] for item in data]
+
+    return jsonify({
+        "labels": purposes,
+        "data": counts
+    })
+
+
+@app.route('/loan-data')
+def loan_data():
+    loan_counts = db.session.query(loan_data_preprocessed.loan_status, db.func.count(
+        loan_data_preprocessed.loan_status)).group_by(loan_data_preprocessed.loan_status).all()
+    loan_status = [loan_status[0] for loan_status in loan_counts]
+    counts = [count[1] for count in loan_counts]
+    return jsonify({
+        "labels": loan_status,
+        "values": counts
+    })
+
+
+@app.route('/annual-dti-histogram')
+def annual_dti_histogram():
+    # Bạn có thể điều chỉnh số lượng bins hoặc phương pháp phân loại tùy theo nhu cầu
+    num_bins = 50
+    data = db.session.query(loan_data_preprocessed.dti).all()
+    dti = [d[0] for d in data if d[0] is not None]
+
+    if not dti:
+        return jsonify([])
+
+    max_value = max(dti)
+    min_value = min(dti)
+    bin_width = (max_value - min_value) / num_bins
+    bins = [min_value + i * bin_width for i in range(num_bins + 1)]
+
+    # Tính toán số lượng mỗi khoảng
+    histogram, bins = np.histogram(dti, bins=bins)
+    bin_centers = 0.5 * (bins[1:] + bins[:-1])
+
+    return jsonify({"labels": bin_centers.tolist(),  "values": histogram.tolist()})
 
 
 if __name__ == '__main__':

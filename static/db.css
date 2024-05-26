@@ -172,7 +172,7 @@ a:hover {
   background-color: #cde8e5;
   margin: 20px 10px 0px 10px;
   border-radius: 10px;
-  height: 95%;
+  height: 100%;
   overflow-y: hidden;
 }
 
@@ -355,7 +355,7 @@ a:hover {
 .search-container {
   display: flex;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 20px 5px 20px;
 }
 
 .search-container input[type="text"] {
@@ -382,6 +382,7 @@ a:hover {
 }
 
 .data-card {
+  height: fit-content;
   width: 50%;
   background: #ffffff;
   border-radius: 8px;
@@ -389,6 +390,7 @@ a:hover {
   padding: 20px;
   margin: 10px 0;
   font-family: "Poppins", sans-serif;
+  font-size: 16px;
 }
 
 .data-card h2 {
@@ -401,7 +403,7 @@ a:hover {
 
 .data-card div {
   margin-bottom: 10px;
-  font-size: 16px;
+  font-size: 15px;
 }
 button {
   background-color: #4caf50; /* Màu nền xanh lá */
@@ -421,4 +423,67 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#resultChart {
+  width: 100%;
+  height: 170px;
+  padding: 20px;
+  background-color: #ffffff;
+  -webkit-column-break-inside: avoid;
+  border-radius: 5px;
+  box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
+}
+.print-button {
+  position: fixed; /* Vị trí cố định */
+  bottom: 50%; /* Khoảng cách từ dưới cùng của trang */
+  right: 30px; /* Khoảng cách từ phải của trang */
+}
+.container {
+  width: 50% !important;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h2 {
+  color: #444;
+}
+label {
+  margin-top: 10px;
+  display: block;
+  font-weight: bold;
+}
+input,
+select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button {
+  background-color: #5cb85c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+button:hover {
+  background-color: #4cae4c;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+.button-container {
+  text-align: center;
+  margin-top: 20px; /* Optional: adds some space above the button */
 }

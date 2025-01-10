@@ -23,12 +23,12 @@ from sqlalchemy import func
 app = Flask(__name__)
 app.secret_key = "NGUYENHAIDANG"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://loan_prediction_app_user:lrBo8SP9GfQUVJjnl9taM8XQFbKISXqI@dpg-cooruf779t8c73fbptbg-a.oregon-postgres.render.com/loan_prediction_app'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://loan_prediction_app_user:V0Rwee11V1j3ih845SO0RmbVe2EeDkNT@dpg-cu075s9opnds738lglg0-a.oregon-postgres.render.com/loan_prediction_app'
 app.config['SQLALCHEMY_BINDS'] = {
-    'db2': 'postgresql://loan_prediction_app_2_user:eXmGXUedIIQ43ezT9LaTD3UmuXwBI5wV@dpg-cp8nnmv109ks739trfag-a.oregon-postgres.render.com/loan_prediction_app_2'
+    'db2': 'postgresql://loan_prediction_app_2:bRQwnCs38oYHJFe3ijhSrTLtOg2A6MXS@dpg-cu07n4dsvqrc73befcsg-a.oregon-postgres.render.com/loan_prediction_app_2_p7bo'
 }
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(
-    minutes=20)  # Set session lifetime to 1 minute
+    minutes=20)
 
 db = SQLAlchemy(app)
 
